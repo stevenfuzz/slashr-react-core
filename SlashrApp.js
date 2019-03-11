@@ -1,6 +1,7 @@
 import { Slashr } from './Slashr';
 import { SlashrUiDialogDomain } from './domains/SlashrUiDialogDomain';
 import { SlashrUiLayoutDomain } from './domains/SlashrUiLayoutDomain';
+import { SlashrUiFormDomainInstances } from './domains/SlashrUiFormDomain';
 import { SlashrUiProgressIndicatorDomain } from './domains/SlashrUiProgressIndicatorDomain';
 // import { SlashrAppRouter } from './Router';
 
@@ -32,6 +33,33 @@ export class SlashrApp {
 	}
 	get mdl() {
 		return this.model;
+	}
+	get domain() {
+		return this.mdl.domain;
+	}
+	get dm() {
+		return this.domain;
+	}
+	get entity() {
+		return this.mdl.entity;
+	}
+	get ent() {
+		return this.entity;
+	}
+	get database() {
+		return this.mdl.database;
+	}
+	get db() {
+		return this.database;
+	}
+	get query() {
+		return this.db.qry;
+	}
+	get qry() {
+		return this.query;
+	}
+	get ui() {
+		return this.mdl.ui;
 	}
 	get routes() {
 		return this._metadata.routes;
@@ -72,6 +100,9 @@ export class SlashrAppModel {
 		//console.log(options.domain);
 		if (options.ui.layout) console.warn("Replacing UI layout domain may cause issues.");
 		else this._metadata.ui.layout = this._metadata.ui.lyt = new SlashrUiLayoutDomain(slashr);
+
+		if (options.ui.forms) console.warn("Replacing UI Form domain may cause issues.");
+		else this._metadata.ui.forms = this._metadata.ui.fms = new SlashrUiFormDomainInstances(slashr);
 
 		if (options.ui.progressIndicator) console.warn("Replacing UI Progress Indicator domain may cause issues.");
 		else this._metadata.ui.progressIndicator = new SlashrUiProgressIndicatorDomain(slashr);

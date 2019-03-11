@@ -53,6 +53,9 @@ export class Slashr {
 	static connect(component) {
 		return inject("app", "slashr")(observer(component));
 	}
+	static connectForm(component) {
+		return inject("app", "slashr", "form")(observer(component));
+	}
 	// static get ui() {
 	// 	let slashr = Slashr.getInstance();
 	// 	slashr.ui;
@@ -77,6 +80,9 @@ export class Slashr {
 	static get Domain() {
 		return SlashrDomain;
 	}
+	static get DomainInstances() {
+		return SlashrDomainInstances;
+	}
 	static listen(domain, props = {}) {
 		domain.prototype.__slashrMemberStateProps = props;
 		decorate(domain, props);
@@ -84,6 +90,9 @@ export class Slashr {
 	// setConfig(config) {
 	// 	this._metadata.config = config;
 	// }
+	onExit(){
+        // do nothing?
+    }
 	get app() {
 		return this._metadata.app
 	}
@@ -94,6 +103,7 @@ export class Slashr {
 	get config() {
 		return this.app.config
 	}
+
 }
 decorate(Slashr, {
 	_metadata: observable
@@ -185,6 +195,33 @@ export class SlashrDomain {
 	}
 	get mdl() {
 		return this.model;
+	}
+	get domain() {
+		return this.mdl.domain;
+	}
+	get dm() {
+		return this.domain;
+	}
+	get entity() {
+		return this.mdl.entity;
+	}
+	get ent() {
+		return this.entity;
+	}
+	get database() {
+		return this.mdl.database;
+	}
+	get db() {
+		return this.database;
+	}
+	get query() {
+		return this.db.qry;
+	}
+	get qry() {
+		return this.query;
+	}
+	get ui() {
+		return this.mdl.ui;
 	}
 	get router() {
 		return Slashr.getInstance().app.router;
@@ -291,6 +328,38 @@ decorate(SlashrDomain, {
 	stateArrayRemove: action
 	// getState: action
 });
+
+export class SlashrDomainInstances extends SlashrDomain{
+	constructor(){
+		super();
+		this._instances = {};
+        return new Proxy(()=>{}, {
+			get : (obj, prop) => {
+				if(this[prop]) return this[prop];
+				if(this.exists(prop)) return this.getInstance(prop);
+				else return null;
+			},
+			apply: (obj, context, args)=>{
+                return this.getInstance(args[0]);
+			}
+		});
+	}
+	addInstance(key, instance){
+		this._instances[key] = instance;
+	}
+	getInstance(key){
+		if(this.exists(key)) return this._instances[key];
+		else return null;
+	}
+	exists(key){
+		return this._instances[key] ? true : false;
+	}
+	forEach(fn){
+		for(let i in this._instances){
+			fn(this._instances[i],i);
+		}
+	}
+}
 
 
 export class frak {

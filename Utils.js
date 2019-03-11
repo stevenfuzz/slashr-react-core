@@ -2,6 +2,7 @@ export class SlashrUtils {
 	constructor() {
 		this.dom = new SlashrDomUtils();
 		this.core = new SlashrCoreUtils();
+		this.auth = new SlashrAuthUtils();
 		this.date = new SlashrDateUtils();
 		this.array = new SlashrArrayUtils();
 		this.string = this.str = new SlashrStringUtils();
@@ -115,6 +116,12 @@ export class SlashrArrayUtils {
 			array[j] = temp
 		}
 		return array;
+	}
+}
+export class SlashrAuthUtils {
+	generateUuid(){
+		let uuidv4 = require("uuid/v4");
+		return uuidv4();
 	}
 }
 export class SlashrDomUtils {
@@ -405,8 +412,31 @@ export class SlashrStringUtils {
 		});
 		return slugArr.join("-");
 	}
+	toSlug(str){
+		// str = this.toTitleCase(str);
+		return str.toLowerCase()
+		.replace(/[^\w\-]+/g, ' ')       // Remove all non-word chars
+		.replace(/\s+/g, '-')           // Replace spaces with -
+		.replace(/\-\-+/g, '-')         // Replace multiple - with single -
+		.replace(/^-+/, '')             // Trim - from start of text
+		.replace(/-+$/, '');            // Trim - from end of text
+	}
+	toUpperCaseWords (str) {
+		return (str + '').replace(/^(.)|\s+(.)/g, function (w) {
+			return w.toUpperCase();
+		});
+	}
 	capitalize(w) {
 		return w.replace(/^\w/, w => w.toUpperCase());
+	}
+	toCamelCase(value){
+		value = this.toSlug(value);
+		value = value.replace(/-/g, " ").replace(/_/g, " ");
+		value = this.toUpperCaseWords(value);
+		
+		let tVals = value.split(" ");
+		if(tVals.length) tVals[0] = tVals[0].toLowerCase();
+		return tVals.join("");
 	}
 	renderSocialText(text, tagRenderer) {
 		if (!text) return text;
