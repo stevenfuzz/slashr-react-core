@@ -3,14 +3,17 @@ import DefaultValidators from "../form/Validators"
 
 export class SlashrUiFormDomainInstances extends Slashr.DomainInstances{
     create(props){
-        let form = new SlashrUiFormDomain(props);
+        let form = new SlashrUiFormDomain(props, this);
         this.addInstance(props.name, form);
         return form;
-    }
+	}
+	remove(name){
+		this.removeInstance(name);
+	}
 }
 
 export class SlashrUiFormDomain extends Slashr.Domain{
-    constructor(props){
+    constructor(props, forms){
         super();
         if(! props.name) throw("Form Error: Form must have a name.");
         //console.log(this.state);
@@ -19,23 +22,28 @@ export class SlashrUiFormDomain extends Slashr.Domain{
         //     // focus: props.focus || false,
         //     // blur: props.blur || false
 		// };
-
+		this._name = props.name;
         this._values = false;
-        this._activeColor = props.activeColor || null;
+		this._activeColor = props.activeColor || null;
+		this._theme = props.theme || material;
 		this._onSubmit = props.onSubmit || null;
         this._errors = {};
 		this._isValid = false;
 		this._defaultValidators = DefaultValidators;
 		this._validators = [];
+		this._forms = forms;
         this.elements = this.elmts = new SlashrUiFormElementDomainInstances(this);
 
         if (props.validators) {
 			this.addValidators(props.validators);
 		}
-    }
+	}
+	remove(){
+		this._forms.remove(this._name);
+	}
     addElement(props){
         return this.elements.add(props);
-    }
+	}
     async submit(){
         this._isValid = await this.validate();
 		if (this._isValid) {
@@ -45,7 +53,10 @@ export class SlashrUiFormDomain extends Slashr.Domain{
     }
     get activeColor(){
         return this._activeColor;
-    }
+	}
+	get theme(){
+        return this._theme;
+	}
     toFormData() {
 		let formData = new FormData();
 		let formMetadata = {

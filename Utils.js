@@ -35,7 +35,7 @@ export class SlashrDateUtils {
 			case this.LABEL_TYPE_ABBREVIATED:
 				ret = this._dayLabelsAbbrv[day];
 				break;
-			case this.LABEL_TYPE_LETTER:
+			case this.LABEL_TYPE_SINGLE_LETTER:
 				ret = this._dayLabelsSingleLetter[day];
 				break;
 			default:
@@ -47,6 +47,9 @@ export class SlashrDateUtils {
 		let ret = "";
 		if (month instanceof Date) month = month.getMonth();
 		else if (month < 0 || month > 11) return null;
+
+		console.log(month);
+
 		switch (type) {
 			case this.LABEL_TYPE_SHORT:
 				ret = this._monthLabelsShort[month];

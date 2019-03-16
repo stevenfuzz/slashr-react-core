@@ -2,7 +2,10 @@ import { Slashr } from './Slashr';
 import { SlashrUiDialogDomain } from './domains/SlashrUiDialogDomain';
 import { SlashrUiLayoutDomain } from './domains/SlashrUiLayoutDomain';
 import { SlashrUiFormDomainInstances } from './domains/SlashrUiFormDomain';
+import { SlashrUiModalDomainInstances } from './domains/SlashrUiModalDomain';
 import { SlashrUiProgressIndicatorDomain } from './domains/SlashrUiProgressIndicatorDomain';
+// import { SlashrUiCalendarDomainInstances } from './domains/SlashrUiCalendarDomain';
+import { SlashrUiDatePickerDomainInstances } from './domains/SlashrUiDatePickerDomain';
 // import { SlashrAppRouter } from './Router';
 
 export class SlashrApp {
@@ -106,6 +109,16 @@ export class SlashrAppModel {
 
 		if (options.ui.progressIndicator) console.warn("Replacing UI Progress Indicator domain may cause issues.");
 		else this._metadata.ui.progressIndicator = new SlashrUiProgressIndicatorDomain(slashr);
+
+		if (options.ui.modal) console.warn("Replacing UI Modal domain may cause issues.");
+		else this._metadata.ui.modal = new SlashrUiModalDomainInstances(slashr);
+
+		// if (options.ui.calendar) console.warn("Replacing UI Calendar domain may cause issues.");
+		// else this._metadata.ui.calendar = this._metadata.ui.cal = new SlashrUiCalendarDomainInstances(slashr);
+
+		if (options.ui.datePicker) console.warn("Replacing UI Date Picker domain may cause issues.");
+		else this._metadata.ui.datePicker = new SlashrUiDatePickerDomainInstances(slashr);
+
 
 		// Bind ui methods
 		// TODO: Add this to SlashrAppUiModel

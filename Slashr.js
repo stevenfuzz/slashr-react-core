@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { set as mobxSet, configure as mobxConfig, decorate, observable, action } from "mobx";
+import { set as mobxSet, configure as mobxConfig, decorate, observable, action, toJS } from "mobx";
 //import { SlashrRouter } from './core/SlashrRouter';
 //import { SlashrUi } from './Ui';
 import { SlashrUtils } from './Utils';
@@ -34,7 +34,8 @@ export class Slashr {
 		//console.log("TODO: Test home much memory store uses....");
 		this._metadata = {
 			config: {},
-			app: null
+			app: null,
+			isRendering: false
 		};
 		//this.ui = new SlashrUi(this);
 		this.utils = new SlashrUtils();
@@ -51,6 +52,21 @@ export class Slashr {
 	// };
 	// Connects commpontent as app observer
 	static connect(component) {
+		// class wrapped extends component{
+		// 	render(){
+		// 		throw("wrapped");
+		// 	}
+		// }
+		// let wrappedComponent = new wrapped();
+		console.log("check component",);
+		component.prototype._slashrRender = component.prototype.render;
+		component.prototype.render = function(){
+			let slashr = Slashr.getInstance();
+			slashr.rendering = true;
+			let ret = this._slashrRender();
+			slashr.rendering = false;
+			return ret;
+		}
 		return inject("app", "slashr")(observer(component));
 	}
 	static connectForm(component) {
@@ -100,13 +116,20 @@ export class Slashr {
 		this._metadata.app = app;
 		return this;
 	}
+	get isRendering() {
+		return this._metadata.rendering
+	}
+	set rendering(rendering) {
+		this._metadata.rendering = rendering;
+		return this;
+	}
 	get config() {
 		return this.app.config
 	}
 
 }
 decorate(Slashr, {
-	_metadata: observable
+	//_metadata: observable
 });
 
 
@@ -283,10 +306,15 @@ export class SlashrDomain {
 	getState() {
 		return new Proxy(this, {
 			get: function (obj, prop) {
+				let slashr = Slashr.getInstance();
 				if (prop in obj.__slashrDomainState) {
 					// if(Array.isArray(obj.__slashrDomainState[prop])) return obj.__createArrProxy(prop);
 					// return obj.__slashrDomainState[prop];
-					return obj.__slashrDomainState[prop];
+					// console.log("GET STATE",prop, slashr.isRendering);
+					// Only return observables during render.
+					if(slashr.isRendering) return obj.__slashrDomainState[prop];
+					else return toJS(obj.__slashrDomainState[prop]); 
+					
 				}
 				else return null;
 			}
@@ -339,6 +367,9 @@ export class SlashrDomainInstances extends SlashrDomain{
 				if(this.exists(prop)) return this.getInstance(prop);
 				else return null;
 			},
+			set : (obj, prop, value) => {
+				this[prop] = value;
+			},
 			apply: (obj, context, args)=>{
                 return this.getInstance(args[0]);
 			}
@@ -346,6 +377,10 @@ export class SlashrDomainInstances extends SlashrDomain{
 	}
 	addInstance(key, instance){
 		this._instances[key] = instance;
+	}
+	removeInstance(key){
+		if(this.exists(key)) delete this._instances[key];
+		else return null;
 	}
 	getInstance(key){
 		if(this.exists(key)) return this._instances[key];
