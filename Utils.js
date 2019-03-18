@@ -1,14 +1,19 @@
 export class SlashrUtils {
 	constructor() {
-		this.dom = new SlashrDomUtils();
-		this.core = new SlashrCoreUtils();
-		this.auth = new SlashrAuthUtils();
-		this.date = new SlashrDateUtils();
-		this.array = new SlashrArrayUtils();
-		this.string = this.str = new SlashrStringUtils();
+		this.dom = new SlashrDomUtils(this);
+		this.core = new SlashrCoreUtils(this);
+		this.auth = new SlashrAuthUtils(this);
+		this.date = new SlashrDateUtils(this);
+		this.array = new SlashrArrayUtils(this);
+		this.string = this.str = new SlashrStringUtils(this);
 	}
 }
-export class SlashrDateUtils {
+class SlashrUtilsChild{
+	constructor(utils){
+		this._utils = utils;
+	}
+}
+export class SlashrDateUtils extends SlashrUtilsChild{
 	LABEL_TYPE_SHORT = "short"
 	LABEL_TYPE_ABBREVIATED = "abbrv"
 	LABEL_TYPE_SINGLE_LETTER = "letter"
@@ -41,15 +46,12 @@ export class SlashrDateUtils {
 			default:
 				ret = this._dayLabels[day];
 		}
-		return ret;
+		return this._utils.str.capitalize(ret);
 	}
 	getMonthLabel(month, type) {
 		let ret = "";
 		if (month instanceof Date) month = month.getMonth();
 		else if (month < 0 || month > 11) return null;
-
-		console.log(month);
-
 		switch (type) {
 			case this.LABEL_TYPE_SHORT:
 				ret = this._monthLabelsShort[month];
@@ -57,7 +59,26 @@ export class SlashrDateUtils {
 			default:
 				ret = this._monthLabels[month];
 		}
-		return ret;
+		return this._utils.str.capitalize(ret);
+	}
+	getDayOrdinal(date) {
+		let number = date.getDate();
+		switch (number) {
+			case 1:
+			case 21:
+			return 'st';
+		break;
+			case 2:
+			case 22:
+			return 'nd';
+		break;
+			case 3:
+			case 23:
+			return 'rd';
+		break;
+			default:
+			return 'th';
+		}
 	}
 	areDatesSameDay(d1, d2) {
 		return d1.getFullYear() === d2.getFullYear() &&

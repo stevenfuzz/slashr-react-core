@@ -6,6 +6,8 @@ import { SlashrUiModalDomainInstances } from './domains/SlashrUiModalDomain';
 import { SlashrUiProgressIndicatorDomain } from './domains/SlashrUiProgressIndicatorDomain';
 // import { SlashrUiCalendarDomainInstances } from './domains/SlashrUiCalendarDomain';
 import { SlashrUiDatePickerDomainInstances } from './domains/SlashrUiDatePickerDomain';
+import { SlashrUiThemeDomain } from './domains/SlashrUiThemeDomain';
+
 // import { SlashrAppRouter } from './Router';
 
 export class SlashrApp {
@@ -118,6 +120,9 @@ export class SlashrAppModel {
 
 		if (options.ui.datePicker) console.warn("Replacing UI Date Picker domain may cause issues.");
 		else this._metadata.ui.datePicker = new SlashrUiDatePickerDomainInstances(slashr);
+
+		if (options.ui.theme) console.warn("Replacing UI Theme Picker domain may cause issues.");
+		else this._metadata.ui.theme = new SlashrUiThemeDomain(slashr);
 
 
 		// Bind ui methods

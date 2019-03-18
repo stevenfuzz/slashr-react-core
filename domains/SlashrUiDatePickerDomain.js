@@ -16,7 +16,8 @@ class SlashrUiDatePickerDomain extends Slashr.Domain{
 		super();
 		if(! props.name) throw("Date Picker Error: Must have a name.");
 		this.state = {
-			date: props.date || new Date()
+			date: props.date || new Date(),
+			visible: props.visible || false
 		};
 		this._itemIndex = 0;
 	}
@@ -33,6 +34,14 @@ class SlashrUiDatePickerDomain extends Slashr.Domain{
 	}
 	setItemIndex(itemIndex){
 		this._itemIndex = itemIndex;
+	}
+	setVisible(visible = true){
+		this.setState({
+			visible: visible
+		});
+	}
+	get isVisible(){
+		return this.state.visible
 	}
 	
 }
