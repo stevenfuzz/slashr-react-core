@@ -6,7 +6,6 @@ export class Calendar extends React.Component {
 	constructor(props) {
 		super(props);
 		//this._calendar = this.props.app.ui.calendar.create(this.props);
-
 		this._loadingIndicator = this.props.loadingIndicator;
 		// this._previousMonthButton = null;
 		// this._nextMonthButton = null;

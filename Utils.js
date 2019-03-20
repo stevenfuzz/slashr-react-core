@@ -89,6 +89,29 @@ export class SlashrDateUtils extends SlashrUtilsChild{
 		return d1.getFullYear() === d2.getFullYear() &&
 			d1.getMonth() === d2.getMonth();
 	}
+	isDayLessThan(d1, d2) {
+		let d1Year = d1.getFullYear();
+		let d1Month = d1.getMonth();
+		let d1Day = d1.getDate();
+		let d2Year = d2.getFullYear();
+		let d2Month = d2.getMonth();
+		let d2Day = d2.getDate();
+		if(d1Year < d2Year) return true;
+		else if(d1Year > d2Year) return false;
+		else if(d1Month < d2Month) return true;
+		else if(d1Day < d2Day) return true;
+		else return false;
+	}
+	isMonthLessThan(d1, d2) {
+		let d1Year = d1.getFullYear();
+		let d1Month = d1.getMonth();
+		let d2Year = d2.getFullYear();
+		let d2Month = d2.getMonth();
+		if(d1Year < d2Year) return true;
+		else if(d1Year > d2Year) return false;
+		else if(d1Month < d2Month) return true;
+		else return false;
+	}
 }
 export class SlashrCoreUtils {
 	// Utils
