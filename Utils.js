@@ -476,6 +476,12 @@ export class SlashrStringUtils {
 	capitalize(w) {
 		return w.replace(/^\w/, w => w.toUpperCase());
 	}
+	uncapitalize(w){
+		return w.replace(/^\w/, w => w.toLowerCase());
+	}
+	replaceAll(str, find, replace) {
+		return str.split(find).join(replace);
+	};
 	toCamelCase(value){
 		value = this.toSlug(value);
 		value = value.replace(/-/g, " ").replace(/_/g, " ");

@@ -1,4 +1,5 @@
 import { Slashr } from "../Slashr";
+import React from 'react';
 import DefaultValidators from "../form/Validators"
 
 export class SlashrUiFormDomainInstances extends Slashr.DomainInstances{
@@ -50,7 +51,7 @@ export class SlashrUiFormDomain extends Slashr.Domain{
 			this.clearErrors();
 			this._onSubmit(this);
 		}
-    }
+	}
     get activeColor(){
         return this._activeColor;
 	}
@@ -238,6 +239,8 @@ export class SlashrUiFormElementDomain extends Slashr.Domain{
         this._form = form;
 		this._name = props.name;
 		this._required = props.required || false;
+		this._ref = React.createRef();
+		this._eventListeners = {};
 
 		let validators = props.validators || props.validator || false;
 		if(validators && ! Array.isArray(validators)) validators = [validators];
@@ -251,7 +254,10 @@ export class SlashrUiFormElementDomain extends Slashr.Domain{
 		   error: false,
 		   success: false,
         };
-    }
+	}
+	get form(){
+		return this._form;
+	}
     get value(){
         return this.state.value;
     }
@@ -259,17 +265,21 @@ export class SlashrUiFormElementDomain extends Slashr.Domain{
         return this.setValue(value);
     }
     setValue(value){
-        this.setState({value: value});
+		let hasChanged = (value !== this.state.value);
+		this.setState({value: value});
+		if(hasChanged) this._triggerEventListener("change");
         return this;
     }
     get focus(){
+		
         return this.state.focus;
     }
     set focus(focus){
         return this.setFocus(focus);
     }
     setFocus(focus){
-        this.setState({focus: focus, blur: ! focus});
+		this.setState({focus: focus, blur: ! focus});
+		this._triggerEventListener("focus");
         return this;
     }
     get isFocused(){
@@ -282,7 +292,8 @@ export class SlashrUiFormElementDomain extends Slashr.Domain{
         return this.setBlur(blur);
     }
     setBlur(blur){
-        this.setState({blur: blur, focus: ! blur});
+		this.setState({blur: blur, focus: ! blur});
+		this._triggerEventListener("blur");
         return this;
     }
     get isBlurred(){
@@ -312,6 +323,7 @@ export class SlashrUiFormElementDomain extends Slashr.Domain{
 		this.setState({
 			error: error
 		});
+		if(error) this._triggerEventListener("error");
 		return this;
 	}
 	set error(error){
@@ -324,6 +336,7 @@ export class SlashrUiFormElementDomain extends Slashr.Domain{
 		this.setState({
 			success: success
 		});
+		if(success) this._triggerEventListener("success");
 		return this;
 	}
 	set success(success){
@@ -339,12 +352,28 @@ export class SlashrUiFormElementDomain extends Slashr.Domain{
         return this.setValid(valid);
     }
     setValid(valid){
-        this.setState({valid: valid});
+		this.setState({valid: valid});
+		if(valid) this._triggerEventListener("valid");
         return this;
     }
     get isValid(){
         return this.valid;
     }
-	
+	get ref(){
+		return this._ref;
+	}
+	set ref(ref){
+		this._ref = ref;
+		return this;
+	}
+	addEventListener(type, callback){
+		if(! this._eventListeners[type]) this._eventListeners[type] = [];
+		this._eventListeners[type].push(callback);
+	}
+	_triggerEventListener(type){
+		if(this._eventListeners[type]) this._eventListeners[type].forEach((callback)=>{
+			callback(type, this, this._form);
+		})
+	}
 }
 
