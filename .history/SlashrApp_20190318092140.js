@@ -7,7 +7,6 @@ import { SlashrUiProgressIndicatorDomain } from './domains/SlashrUiProgressIndic
 // import { SlashrUiCalendarDomainInstances } from './domains/SlashrUiCalendarDomain';
 import { SlashrUiDatePickerDomainInstances } from './domains/SlashrUiDatePickerDomain';
 import { SlashrUiThemeDomain } from './domains/SlashrUiThemeDomain';
-import { SlashrApi } from './SlashrApi';
 
 // import { SlashrAppRouter } from './Router';
 
@@ -18,7 +17,6 @@ export class SlashrApp {
 		this._slashr = Slashr.getInstance();
 		this._metadata = {
 			model: new SlashrAppModel(this._slashr, this, options),
-			api: new SlashrApi(this._slashr, this, options),
 			// router: new SlashrAppRouter(this._slashr, this, options),
 			config: options.config,
 			routes: options.routes,
@@ -76,9 +74,6 @@ export class SlashrApp {
 	}
 	get utils() {
 		return this._metadata.utilities;
-	}
-	get api() {
-		return this._metadata.api;
 	}
 	get defaultLayout() {
 		return this._metadata.defaultLayout;

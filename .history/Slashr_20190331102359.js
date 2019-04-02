@@ -258,9 +258,6 @@ export class SlashrDomain {
 	get utils() {
 		return this.utilities;
 	}
-	get api() {
-		return Slashr.getInstance().app.api;
-	}
 	setState(values) {
 		this.isUpdatingState = true;
 		let memberStateProps = this.__slashrMemberStateProps ? this.__slashrMemberStateProps : {};

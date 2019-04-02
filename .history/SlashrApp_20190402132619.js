@@ -77,9 +77,6 @@ export class SlashrApp {
 	get utils() {
 		return this._metadata.utilities;
 	}
-	get api() {
-		return this._metadata.api;
-	}
 	get defaultLayout() {
 		return this._metadata.defaultLayout;
 	}
@@ -134,6 +131,9 @@ export class SlashrAppModel {
 		// TODO: Add this to SlashrAppUiModel
 		this._metadata.ui.createGrid = this._createGrid.bind(this);
 
+	}
+	get api() {
+		return this._metadata.api;
 	}
 	get domain() {
 		return this._metadata.domain;

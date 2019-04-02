@@ -35,8 +35,14 @@ const Validators = {
 		else return true;
 	},
 	positiveInt: (value) => {
+		value = `${value}`;
 		if(/^\d+$/.test(value)) return true;
 		else return {error: "Must be a positive whole number."};
 	},
+	int: (value) => {
+		value = `${value}`;
+		if(value.match(/^-{0,1}\d+$/)) return true;
+		else return {error: "Must be a whole number."};
+	}
 }
 export default Validators;

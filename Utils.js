@@ -29,6 +29,9 @@ export class SlashrDateUtils extends SlashrUtilsChild{
 			"/" + date.getDate() +
 			"/" + date.getFullYear();
 	}
+	fromUnixTimestamp(timestamp){
+		return new Date(timestamp * 1000);
+	}
 	getDayLabel(day, type) {
 		let ret = "";
 		if (day instanceof Date) day = day.getDay();
@@ -80,6 +83,45 @@ export class SlashrDateUtils extends SlashrUtilsChild{
 			return 'th';
 		}
 	}
+	getDayRange(date){
+		let startDate = new Date(date);
+		startDate.setHours(0,0,0,0);
+		let endDate = new Date(startDate);
+		endDate.setHours(23,59,59,0);
+		return {
+			start: startDate,
+			end: endDate
+		}
+	}
+	getWeekRange(date, isEndDate = false){
+		let startDate = null;
+		let endDate = null;
+		if(isEndDate){
+			endDate = new Date(date);
+			endDate.setHours(23,59,59,0);
+			startDate = new Date(endDate);
+			startDate.setDate(startDate.getDate() - 7);
+			startDate.setHours(0,0,0,0);
+		}
+		else{
+			startDate = new Date(date);
+			startDate.setHours(0,0,0,0);
+			let endDate = new Date(startDate);
+			endDate.setDate(endDate.getDate() + 7);
+			endDate.setHours(23,59,59,0);
+		}
+		return {
+			start: startDate,
+			end: endDate
+		}
+	}
+	toLocalTime(date) {
+		date = new Date(date);
+		let localOffset = date.getTimezoneOffset() * 60000;
+		let localTime = date.getTime();
+		date = localTime - localOffset;
+		return new Date(date);
+	};
 	areDatesSameDay(d1, d2) {
 		return d1.getFullYear() === d2.getFullYear() &&
 			d1.getMonth() === d2.getMonth() &&

@@ -265,6 +265,7 @@ export class SlashrUiFormElementDomain extends Slashr.Domain{
         return this.setValue(value);
     }
     setValue(value){
+		console.log("SETTING VALUE",value);
 		let hasChanged = (value !== this.state.value);
 		this.setState({value: value});
 		if(hasChanged) this._triggerEventListener("change");
